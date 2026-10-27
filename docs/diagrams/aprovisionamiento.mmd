@@ -1,0 +1,23 @@
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#EDE7F6','primaryBorderColor':'#6B5B95','primaryTextColor':'#2D2A3A','lineColor':'#6B5B95','fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px'}}}%%
+sequenceDiagram
+    autonumber
+    participant C as Cliente
+    participant A as API REST
+    participant P as ProvisioningService
+    participant K as Kubernetes API
+    participant PG as PostgreSQL
+
+    C->>A: POST /instances {engine: postgres, plan: dedicated-s}
+    A->>P: createInstance(config)
+    P->>P: valida motor, plan y cuota
+    P->>K: crea Namespace + ResourceQuota + LimitRange
+    P->>K: crea NetworkPolicy
+    P->>P: genera contraseña (crypto.randomBytes)
+    P->>K: crea Secret
+    P->>K: crea StatefulSet + PVC + Service
+    K->>PG: programa el Pod
+    PG-->>K: readiness (pg_isready)
+    P->>K: espera rollout
+    P-->>A: ConnectionInfo
+    A-->>C: 201 {host, port, database, user, sslmode}
+    Note over C,PG: El PVC conserva los datos al reiniciar el Pod

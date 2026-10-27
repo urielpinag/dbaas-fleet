@@ -1,0 +1,31 @@
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#EDE7F6','primaryBorderColor':'#6B5B95','primaryTextColor':'#2D2A3A','lineColor':'#6B5B95','fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px'}}}%%
+flowchart LR
+    subgraph CI["CI · cada Pull Request"]
+        direction TB
+        A["1. typecheck"] --> B["2. pruebas"]
+        B --> C["3. Gitleaks"]
+        C --> D["4. Trivy fs"]
+        D --> E["5. CodeQL"]
+        E --> F["6. build de imagen"]
+        F --> G["7. Trivy image"]
+    end
+
+    subgraph CD["CD · merge a main"]
+        direction TB
+        H["8. push a GHCR"] --> I["9. aprobación manual"]
+        I --> J["10. kubectl set image"]
+        J --> K["11. smoke test"]
+        K -->|ok| L["12. release"]
+        K -->|falla| M["rollback"]
+    end
+
+    G -->|merge squash| H
+
+    classDef step fill:#EDE7F6,stroke:#6B5B95,color:#2D2A3A,stroke-width:1.5px
+    classDef gate fill:#FFF3E0,stroke:#EF6C00,color:#3E2723,stroke-width:1.5px
+    classDef ok fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20,stroke-width:1.5px
+    classDef bad fill:#FFEBEE,stroke:#C62828,color:#B71C1C,stroke-width:1.5px
+    class A,B,H,J step
+    class C,D,E,F,G,I,K gate
+    class L ok
+    class M bad

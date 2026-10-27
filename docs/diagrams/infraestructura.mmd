@@ -1,0 +1,36 @@
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#EDE7F6','primaryBorderColor':'#6B5B95','primaryTextColor':'#2D2A3A','lineColor':'#6B5B95','fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px'}}}%%
+flowchart LR
+    U["Cliente / aplicación<br/>psql · driver"]
+    GH["GitHub Actions<br/>+ GHCR"]
+
+    subgraph CF["Cloudfleet CFKE · nodos Hetzner"]
+        direction TB
+        ING["Ingress + TLS"]
+        API["API REST<br/>Deployment · 2 réplicas"]
+
+        subgraph OBS["namespace: observability"]
+            direction LR
+            PROM["Prometheus"] --> GRAF["Grafana"]
+            LOKI["Loki"]
+        end
+
+        ING --> API
+        API -->|crea y monitorea| PG1[("namespace cliente-a<br/>PostgreSQL + PVC")]
+        API -->|crea y monitorea| PG2[("namespace cliente-b<br/>PostgreSQL + PVC")]
+        PROM -.->|scrape| API
+        PROM -.->|scrape| PG1
+        PROM -.->|scrape| PG2
+        LOKI -.->|logs| API
+    end
+
+    U -->|HTTPS 443| ING
+    U -.->|TCP 5432| PG1
+    U -.->|TCP 5432| PG2
+    GH -->|deploy + pull| API
+
+    classDef svc fill:#EDE7F6,stroke:#6B5B95,color:#2D2A3A,stroke-width:1.5px
+    classDef db fill:#D1C4E9,stroke:#512DA8,color:#1A1333,stroke-width:1.5px
+    classDef ext fill:#F5F5F5,stroke:#9E9E9E,color:#2D2A3A
+    class API,ING,GRAF,PROM,LOKI svc
+    class PG1,PG2 db
+    class U,GH ext
