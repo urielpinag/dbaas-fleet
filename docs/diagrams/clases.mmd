@@ -1,0 +1,90 @@
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#EDE7F6','primaryBorderColor':'#6B5B95','primaryTextColor':'#2D2A3A','lineColor':'#6B5B95','fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px'}}}%%
+classDiagram
+    direction LR
+
+    class ApiClientHandler {
+        -requestUrl: string
+        -httpMethod: string
+        -headers: Map
+        +handleGet(endpoint: string) Promise
+        +handlePost(endpoint: string, payload: unknown) Promise
+        -handleErrors(error: unknown) JsonResult
+    }
+
+    class ProvisioningService {
+        -provisioner: IKubernetesProvisioner
+        -repository: IInstanceRepository
+        -plans: PlanCatalog
+        +createInstance(config: DbConfig) InstanceResult
+        +deleteInstance(id: string, keepVolume: boolean) void
+        +getInstance(id: string) PostgresInstance
+        +checkHealth(id: string) HealthStatus
+    }
+
+    class IKubernetesProvisioner {
+        <<interface>>
+        +createNamespace(clientId: string) void
+        +applyQuota(namespace: string, plan: Plan) void
+        +createSecret(namespace: string, password: string) SecretRef
+        +createStatefulSet(namespace: string, plan: Plan) void
+        +createService(namespace: string, exposure: string) ConnectionInfo
+        +deleteInstance(namespace: string, keepVolume: boolean) void
+    }
+
+    class KubernetesProvisioner {
+        -kubeConfig: KubeConfig
+        -coreApi: CoreV1Api
+        -appsApi: AppsV1Api
+        +createStatefulSet(namespace: string, plan: Plan) void
+        +waitForReady(namespace: string, timeoutMs: number) boolean
+    }
+
+    class IInstanceRepository {
+        <<interface>>
+        +save(instance: PostgresInstance) void
+        +findById(id: string) PostgresInstance
+        +findByClient(clientId: string) PostgresInstance
+        +remove(id: string) void
+    }
+
+    class InstanceRepository {
+        -store: MetadataStore
+        +save(instance: PostgresInstance) void
+    }
+
+    class PostgresInstance {
+        -instanceId: string
+        -clientId: string
+        -plan: Plan
+        -status: InstanceStatus
+        -namespace: string
+        -secretRef: string
+        -connection: ConnectionInfo
+        -createdAt: Date
+        +suspend() void
+        +restart() void
+        +connectionString() string
+    }
+
+    class PlanCatalog {
+        -plans: Map
+        +get(planId: string) Plan
+        +list() Plan
+    }
+
+    class Plan {
+        +id: string
+        +cpu: string
+        +memory: string
+        +storage: string
+        +priceMxn: number
+    }
+
+    ApiClientHandler --> ProvisioningService : inyecta
+    ProvisioningService --> IKubernetesProvisioner : usa
+    KubernetesProvisioner ..|> IKubernetesProvisioner : implementa
+    ProvisioningService --> IInstanceRepository : persiste
+    InstanceRepository ..|> IInstanceRepository : implementa
+    ProvisioningService --> PlanCatalog : consulta
+    PlanCatalog --> Plan
+    ProvisioningService --> PostgresInstance : gestiona
