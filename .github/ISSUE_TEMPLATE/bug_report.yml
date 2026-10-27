@@ -1,0 +1,48 @@
+name: Bug
+description: Algo no funciona como se espera
+title: "fix: "
+labels: ["kind/bug"]
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción
+      description: Qué esperabas que pasara y qué pasó realmente.
+      placeholder: Al crear una instancia, el Pod queda en CrashLoopBackOff...
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para reproducir
+      placeholder: |
+        1. POST /instances con ...
+        2. kubectl get pods -n cliente-a
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: entorno
+    attributes:
+      label: Entorno
+      description: Versión de la API, clúster, commit y cualquier dato relevante.
+      placeholder: commit abc1234, CFKE 1.33, Postgres 16
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs o capturas
+      render: shell
+    validations:
+      required: false

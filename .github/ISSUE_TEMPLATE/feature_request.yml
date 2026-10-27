@@ -1,0 +1,38 @@
+name: Feature
+description: Trabajo nuevo del roadmap o del proyecto
+title: "feat: "
+labels: ["kind/feature"]
+body:
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: Por qué se necesita y a qué milestone pertenece.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Alcance
+      description: Qué entra y qué no entra en este issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: notas
+    attributes:
+      label: Notas técnicas
+      description: Referencias, dependencias o decisiones de diseño.
+    validations:
+      required: false

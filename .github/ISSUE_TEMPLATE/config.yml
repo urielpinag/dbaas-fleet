@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Tablero del proyecto
+    url: https://github.com/urielpinag/dbaas-fleet/issues
+    about: Revisa el estado del trabajo y los milestones antes de abrir un issue.
