@@ -2,7 +2,7 @@
 
 Plataforma de **Database as a Service** que aprovisiona instancias de **PostgreSQL** aisladas por cliente sobre Kubernetes, con infraestructura declarativa, CI/CD y observabilidad.
 
-> Proyecto final de **ESI3905O · Infraestructura para el Desarrollo Continuo** — ITESO.
+> Proyecto final de **Infraestructura para el Desarrollo Continuo** — ITESO.
 > Autor: **Angel Uriel Piña Aguilar** · Profesor: **Luis Eduardo Estrada Rodríguez**.
 
 [![ci](https://github.com/urielpinag/dbaas-fleet/actions/workflows/ci.yml/badge.svg)](https://github.com/urielpinag/dbaas-fleet/actions/workflows/ci.yml)
