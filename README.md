@@ -136,7 +136,7 @@ Ver [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Enlaces
 
-- **Tablero Kanban:** por publicar
+- **Tablero Kanban:** <https://github.com/users/urielpinag/projects/1>
 - **Wiki:** por publicar
 - **Issues:** <https://github.com/urielpinag/dbaas-fleet/issues>
 - **Actions:** <https://github.com/urielpinag/dbaas-fleet/actions>
